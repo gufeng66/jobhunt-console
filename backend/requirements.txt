@@ -1,5 +1,11 @@
 fastapi
 uvicorn[standard]
 sqlalchemy
+alembic
 pymysql
 pydantic-settings
+bcrypt
+PyJWT
+python-multipart
+pytest
+ruff

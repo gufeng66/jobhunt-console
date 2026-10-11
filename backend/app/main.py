@@ -1,10 +1,24 @@
+from contextlib import asynccontextmanager
+
 from fastapi import APIRouter, Depends, FastAPI
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 
-from app.db import get_db
+from app.db import SessionLocal, get_db
+from app.users import upsert_user
 
-app = FastAPI()
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    db = SessionLocal()
+    try:
+        upsert_user(db)
+    finally:
+        db.close()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
 api = APIRouter(prefix="/api")
 
 
