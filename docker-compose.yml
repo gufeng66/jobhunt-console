@@ -21,7 +21,7 @@ services:
     environment:
       TZ: Asia/Shanghai
       DATABASE_URL: mysql+pymysql://jobhunt:${MYSQL_PASSWORD:-jobhunt_compose}@mysql:3306/jobhunt?charset=utf8mb4
-      USERNAME: ${USERNAME:-admin}
+      APP_USERNAME: ${APP_USERNAME:-admin}
       INITIAL_PASSWORD: ${INITIAL_PASSWORD:?set INITIAL_PASSWORD}
       JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
       UPLOAD_DIR: /app/uploads

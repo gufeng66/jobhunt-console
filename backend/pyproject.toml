@@ -1,0 +1,9 @@
+[tool.ruff]
+line-length = 100
+extend-exclude = ["alembic"]
+
+[tool.ruff.lint]
+ignore = ["B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
