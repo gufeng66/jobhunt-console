@@ -1,0 +1,46 @@
+services:
+  mysql:
+    image: mysql:8
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-jobhunt_root}
+      MYSQL_DATABASE: jobhunt
+      MYSQL_USER: jobhunt
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-jobhunt_compose}
+      TZ: Asia/Shanghai
+    command: --default-time-zone=+08:00 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${MYSQL_ROOT_PASSWORD:-jobhunt_root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  backend:
+    build: ./backend
+    environment:
+      TZ: Asia/Shanghai
+      DATABASE_URL: mysql+pymysql://jobhunt:${MYSQL_PASSWORD:-jobhunt_compose}@mysql:3306/jobhunt?charset=utf8mb4
+      USERNAME: ${USERNAME:-admin}
+      INITIAL_PASSWORD: ${INITIAL_PASSWORD:?set INITIAL_PASSWORD}
+      JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET}
+      UPLOAD_DIR: /app/uploads
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    volumes:
+      - uploads:/app/uploads
+
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
+  uploads:

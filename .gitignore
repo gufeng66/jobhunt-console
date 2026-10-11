@@ -1,0 +1,13 @@
+.env
+.workbuddy/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+node_modules/
+.npm-cache/
+dist/
+uploads/
+backend/uploads/
+*.egg-info/
